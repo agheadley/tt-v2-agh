@@ -64,7 +64,7 @@
           </template>
 
           <th>
-            <v-btn text icon color="red">
+            <v-btn text icon color="red" @click="deleteRow('all')">
               <v-icon>mdi-delete</v-icon>
             </v-btn>
           </th>
@@ -105,7 +105,7 @@
             </template>
 
             <th>
-              <v-btn text icon>
+              <v-btn text icon @click="deleteRow(rowIndex)">
                 <v-icon>mdi-delete</v-icon>
               </v-btn>
             </th>
@@ -114,98 +114,6 @@
       </tbody>
     </v-simple-table>
 
-    <!--
-
-    <template v-if="!isBlock">
-      <v-simple-table>
-        <thead>
-          <tr>
-            <th>Block</th>
-            <th
-              v-for="(header,headerIndex) in data.weeks[week].headers"
-              :style="getColor(headerIndex)"
-              v-bind:key="header.id"
-            >{{header.block}}</th>
-            <th></th>
-          </tr>
-
-          <tr>
-            <th>Year</th>
-            <th v-for="header in data.weeks[week].headers" v-bind:key="header.id">{{header.name}}</th>
-            <th>
-              <v-btn text icon color="red">
-                <v-icon>mdi-delete</v-icon>
-              </v-btn>
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="(row,rowIndex) in data.weeks[week].rows" v-bind:key="rowIndex">
-            <th>{{row.year.name}}</th>
-            <td
-              v-for="(col,colIndex) in row.data"
-              v-bind:key="colIndex"
-              @click="edit(rowIndex,colIndex)"
-            >
-              {{col.setInfo}}
-              <br>
-              <b>{{col.staffInfo}}</b>
-              <br>
-              <i>{{col.roomInfo}}</i>
-            </td>
-            <th>
-              <v-btn text icon>
-                <v-icon>mdi-delete</v-icon>
-              </v-btn>
-            </th>
-          </tr>
-        </tbody>
-      </v-simple-table>
-    </template>
-
-    <template v-if="isBlock">
-      <v-simple-table>
-        <thead>
-          <tr>
-            <th>Block</th>
-            <th v-for="header in data.weeks[week].blocks" v-bind:key="header.id">{{header.block}}</th>
-            <th></th>
-          </tr>
-          <tr>
-            <th>Year</th>
-            <th v-for="header in data.weeks[week].blocks" v-bind:key="header.id">{{header.name}}</th>
-            <th>
-              <v-btn text icon color="red">
-                <v-icon>mdi-delete</v-icon>
-              </v-btn>
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="(row,rowIndex) in data.weeks[week].rows" v-bind:key="rowIndex">
-            <th>{{row.year.name}}</th>
-            <td
-              v-for="header in data.weeks[week].blocks"
-              v-bind:key="header.id"
-              @click="edit(rowIndex,header.headersIndex)"
-            >
-              {{row.data[header.headersIndex].setInfo}}
-              <br>
-              <b>{{row.data[header.headersIndex].staffInfo}}</b>
-              <br>
-              <i>{{row.data[header.headersIndex].roomInfoInfoInfo}}</i>
-            </td>
-            <th>
-              <v-btn text icon>
-                <v-icon>mdi-delete</v-icon>
-              </v-btn>
-            </th>
-          </tr>
-        </tbody>
-      </v-simple-table>
-    </template>
-
-    -->
     <!-- /timetable entry-->
     <!-- add row-->
     <br>
@@ -261,6 +169,12 @@ export default {
       store.addRow(this.week, this.year);
       this.data = store.getData();
       //console.log(this.data.weeks[0]);
+    },
+    deleteRow(row) {
+      if (row === "all") this.data.weeks[this.week].rows = [];
+      else this.data.weeks[this.week].rows.splice(row, 1);
+
+      store.setData(this.data);
     },
 
     edit(row, col) {

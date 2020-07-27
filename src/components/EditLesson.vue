@@ -6,33 +6,30 @@
         label="set"
         dense
         outlined
-        :rules="classRules"
         hint="(valid subject)/(set number)"
         persistent-hint
         counter
-        maxlength="10"
+        clearable
         v-model="active.setInfo"
       ></v-text-field>
       <v-text-field
         label="staff"
         dense
         outlined
-        :rules="staffRules"
         hint="(valid staff initials)"
         persistent-hint
         counter
-        maxlength="4"
+        clearable
         v-model="active.staffInfo"
       ></v-text-field>
       <v-text-field
         label="room"
         dense
         outlined
-        :rules="roomRules"
         hint="(valid room code)"
         persistent-hint
         counter
-        maxlength="10"
+        clearable
         v-model="active.roomInfo"
       ></v-text-field>
 
@@ -57,19 +54,21 @@ export default {
   name: "EditLesson",
   data() {
     return {
+      /*
       classRules: [
-        v => !!v || "class required",
-        v => /.+\/.+/.test(v) || "Subject/Set",
+        v => !!v || "(valid subject)/(set) required",
+        v => /.+\/.+/.test(v) || "(valid subject)/(set) required",
         v => v.length <= 10 || "Max 10 characters"
       ],
       staffRules: [
-        //v => !!v || "staff required",
+        v => !!v || "staff required",
         v => v.length <= 4 || "Max 4 characters"
       ],
       roomRules: [
-        //v => !!v || "room required",
+        v => !!v || "room required",
         v => v.length <= 10 || "Max 10 characters"
       ],
+      */
       snackbar: false,
       snackbarMessage: ""
     };
@@ -142,6 +141,7 @@ export default {
       } else isValid = false;
 
       if (!isValid) this.snackbarMessage += "Invalid set entry. ";
+
       return isValid;
     }
   },

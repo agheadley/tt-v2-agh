@@ -128,6 +128,11 @@ let getData = () => {
   return JSON.parse(JSON.stringify(store.data));
 };
 
+let setData = data => {
+  store.data = data;
+  window.localStorage.setItem("data", JSON.stringify(store.data));
+};
+
 let addRow = (weekIndex, yearIndex) => {
   let row = [];
   for (let lesson of store.data.weeks[weekIndex].headers) {
@@ -198,6 +203,7 @@ export {
   init,
   getSettings,
   getData,
+  setData,
   addRow,
   setActive,
   getActive,
