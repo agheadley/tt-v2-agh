@@ -20,6 +20,102 @@
     </v-row>
 
     <!-- timetable entry-->
+    <v-simple-table>
+      <thead>
+        <tr>
+          <th>&nbsp;</th>
+
+          <template v-if="!isBlock">
+            <th
+              v-for="(header,headerIndex) in data.weeks[week].headers"
+              :style="getColor(headerIndex)"
+              v-bind:key="header.id"
+            >{{header.block}}</th>
+          </template>
+          <template v-if="isBlock">
+            <th
+              v-for="header in data.weeks[week].blocks"
+              :style="getColor(header.headersIndex)"
+              v-bind:key="header.id"
+            >{{header.block}}</th>
+          </template>
+        </tr>
+        <tr>
+          <th>&nbsp;</th>
+
+          <template v-if="!isBlock">
+            <th
+              v-for="(header,headerIndex) in data.weeks[week].headers"
+              :style="getColor(headerIndex)"
+              v-bind:key="header.id"
+            >
+              <b>{{header.name}}</b>
+            </th>
+          </template>
+
+          <template v-if="isBlock">
+            <th
+              v-for="header in data.weeks[week].blocks"
+              :style="getColor(header.headersIndex)"
+              v-bind:key="header.id"
+            >
+              <b>{{header.name}}</b>
+            </th>
+          </template>
+
+          <th>
+            <v-btn text icon color="red">
+              <v-icon>mdi-delete</v-icon>
+            </v-btn>
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="(row,rowIndex) in data.weeks[week].rows" v-bind:key="rowIndex">
+          <template v-if="(row.year.id===year && !isAllYears) || isAllYears">
+            <th>{{row.year.name}}</th>
+
+            <template v-if="!isBlock">
+              <td
+                v-for="(header,headerIndex) in data.weeks[week].headers"
+                :style="getColor(headerIndex)"
+                v-bind:key="header.id"
+                @click="edit(rowIndex,headerIndex)"
+              >
+                {{row.data[headerIndex].setInfo}}
+                <br>
+                <b>{{row.data[headerIndex].staffInfo}}</b>
+                <br>
+                <i>{{row.data[headerIndex].roomInfo}}</i>
+              </td>
+            </template>
+
+            <template v-if="isBlock">
+              <td
+                v-for="header in data.weeks[week].blocks"
+                :style="getColor(header.headersIndex)"
+                v-bind:key="header.id"
+              >
+                {{row.data[header.headersIndex].setInfo}}
+                <br>
+                <b>{{row.data[header.headersIndex].staffInfo}}</b>
+                <br>
+                <i>{{row.data[header.headersIndex].roomInfo}}</i>
+              </td>
+            </template>
+
+            <th>
+              <v-btn text icon>
+                <v-icon>mdi-delete</v-icon>
+              </v-btn>
+            </th>
+          </template>
+        </tr>
+      </tbody>
+    </v-simple-table>
+
+    <!--
+
     <template v-if="!isBlock">
       <v-simple-table>
         <thead>
@@ -109,6 +205,7 @@
       </v-simple-table>
     </template>
 
+    -->
     <!-- /timetable entry-->
     <!-- add row-->
     <br>
