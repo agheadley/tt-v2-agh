@@ -10,18 +10,12 @@
     <br>
     <v-card>
       <v-card-title>Timetable Name</v-card-title>
-      <v-row align="baseline">
-        <v-col>
-          <v-card-text>
-            <v-text-field v-model="settings.name" label="Name" readonly outlined></v-text-field>
-          </v-card-text>
-        </v-col>
-        <v-col>
-          <v-card-actions>
-            <v-btn text color="info" @click="openDialog('TIMETABLE NAME')">Change Name</v-btn>
-          </v-card-actions>
-        </v-col>
-      </v-row>
+      <v-card-text>
+        <v-text-field v-model="settings.name" label="Name" readonly outlined></v-text-field>
+      </v-card-text>
+      <v-card-actions>
+        <v-btn text color="info" @click="openDialog('TIMETABLE NAME')">Update</v-btn>
+      </v-card-actions>
     </v-card>
     <br>
     <v-card>
@@ -53,11 +47,39 @@
         <v-btn text color="info" @click="openDialog('LESSONS')">UPDATE</v-btn>
       </v-card-actions>
     </v-card>
+    <br>
+    <template v-if="settings.blocks">
+      <v-card>
+        <v-card-title>Block Colours</v-card-title>
+        <v-card-text>
+          <v-row>
+            <v-col>
+              <v-simple-table>
+                <tbody>
+                  <tr v-for="(block,index) in settings.blocks" v-bind:key="index">
+                    <td>{{block.name}}</td>
+                    <td :style="getColor(block)">&nbsp;&nbsp;</td>
+
+                    <td>
+                      <v-btn text color="info" @click="updateColor(index)">UPDATE</v-btn>
+                    </td>
+                  </tr>
+                </tbody>
+              </v-simple-table>
+            </v-col>
+            <v-col>
+              <v-color-picker v-model="color" hide-mode-switch mode="hexa"></v-color-picker>
+            </v-col>
+          </v-row>
+        </v-card-text>
+        <v-card-actions></v-card-actions>
+      </v-card>
+    </template>
     <v-dialog v-model="dialog" max-width="25em">
       <Reset
         v-if="action==='CLEAR SETTINGS' || action==='CLEAR DATA'"
         v-bind:action="action"
-        v-on:close="dialog=false;"
+        v-on:close="updateReset"
       ></Reset>
       <Name v-if="action==='TIMETABLE NAME'" v-on:close="updateName"></Name>
       <Lessons v-if="action==='LESSONS'" v-on:close="updateLessons"></Lessons>
@@ -71,7 +93,6 @@ import Reset from "../components/Reset";
 import Name from "../components/Name";
 import Lessons from "../components/Lessons";
 
-
 export default {
   name: "Settings",
   components: {
@@ -84,7 +105,8 @@ export default {
       dialog: "",
       action: null,
       settings: null,
-      data: null
+      data: null,
+      color: null
     };
   },
   created() {
@@ -105,9 +127,21 @@ export default {
     },
     updateLessons() {
       this.settings = store.getSettings();
-      store.resetData();
+
       this.data = store.getData();
       this.dialog = false;
+    },
+    updateReset() {
+      this.settings = store.getSettings();
+      this.data = store.getData();
+      this.dialog = false;
+    },
+    updateColor(index) {
+      this.settings.blocks[index].color = this.color.hex;
+      store.setSettings(this.settings);
+    },
+    getColor(block) {
+      return "background-color:" + block.color;
     }
   }
 };

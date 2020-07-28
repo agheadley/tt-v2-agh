@@ -48,12 +48,11 @@ export default {
         if (rowIndex > 0) lessons.push(obj);
       }
 
-      let keys=Object.keys(lessons[0]);
-      let check=['id','day','period','week','block'];
-      for(let item of check) {
-        if(keys.indexOf(item)===-1) valid=false;
+      let keys = Object.keys(lessons[0]);
+      let check = ["id", "day", "period", "week", "block"];
+      for (let item of check) {
+        if (keys.indexOf(item) === -1) valid = false;
       }
-
 
       let weekInfo = [...new Set(lessons.map(el => el.week))].sort();
       let weeks = weekInfo.map((el, i) => ({ id: i, name: el }));
@@ -65,7 +64,6 @@ export default {
 
       let blocks = blockInfo.map(el => ({ name: el, color: "#eeeeee" }));
 
-
       //console.log(blocks);
       //console.log(valid);
       //console.log(lessons);
@@ -75,8 +73,9 @@ export default {
         this.settings.lessons = lessons;
 
         store.setSettings(this.settings);
+        store.resetData();
 
-        this.settings=store.getSettings();
+        this.settings = store.getSettings();
 
         this.$emit("close");
       } else {

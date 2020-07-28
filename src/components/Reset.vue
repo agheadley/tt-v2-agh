@@ -6,6 +6,10 @@
       <span style="color:red">
         <b>{{action}}</b>
       </span> into the box below and click delete to clear.
+      <template v-if="action==='CLEAR SETTINGS'">
+        <br>
+        <b>Clearing settings, will also clear stored data.</b>
+      </template>
       <br>
       <br>
       <v-text-field v-model="check" outlined clearable></v-text-field>
