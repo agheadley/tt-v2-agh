@@ -70,7 +70,7 @@ import * as store from "../scripts/store";
 import Reset from "../components/Reset";
 import Name from "../components/Name";
 import Lessons from "../components/Lessons";
-import { watchFile } from "fs";
+
 
 export default {
   name: "Settings",
