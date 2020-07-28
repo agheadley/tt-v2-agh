@@ -42,7 +42,7 @@
     </v-card-text>
     <v-card-actions>
       <v-spacer></v-spacer>
-      <v-btn color="info" text  @click="store">store</v-btn>
+      <v-btn color="info" text @click="store">store</v-btn>
     </v-card-actions>
   </v-card>
 </template>
@@ -97,6 +97,7 @@ export default {
       this.$emit("updateLesson");
     },
     checkStaffInfo() {
+      if (this.active.staffInfo === null) this.active.staffInfo = "";
       let isValid = true;
       this.active.staffInfo = (" " + this.active.staffInfo)
         .toUpperCase()
@@ -111,6 +112,7 @@ export default {
       return isValid;
     },
     checkRoomInfo() {
+      if (this.active.roomInfo === null) this.active.roomInfo = "";
       let isValid = true;
       this.active.roomInfo = (" " + this.active.roomInfo).replace(/ /g, "");
 
@@ -123,6 +125,7 @@ export default {
       return isValid;
     },
     checksetInfo() {
+      if(this.active.setInfo===null) this.active.setInfo="";
       let isValid = true;
 
       this.active.setInfo = (" " + this.active.setInfo).replace(/ /g, "");
