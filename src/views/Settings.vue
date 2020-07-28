@@ -109,8 +109,7 @@ export default {
       this.data = store.getData();
       this.dialog = false;
     }
-  },
-  watch: {}
+  }
 };
 </script>
 
