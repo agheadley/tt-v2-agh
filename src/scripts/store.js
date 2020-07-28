@@ -218,7 +218,7 @@ let storeActive = (setInfo, staffInfo, roomInfo) => {
 
   for (let [index, item] of roomArr.entries()) {
     console.log(index, item);
-    if (staffArr.filter(el => el === item).length > 1) {
+    if (roomArr.filter(el => el === item).length > 1) {
       found.push(index);
       store.data.weeks[store.active.week].rows[index].data[
         store.active.col
