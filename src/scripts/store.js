@@ -139,9 +139,11 @@ let addRow = (weekIndex, yearIndex) => {
     row.push({
       name: lesson.name,
       id: lesson.id,
-      setinfo: "",
+      setInfo: "",
       staffInfo: "",
-      roomInfo: ""
+      roomInfo: "",
+      subject: "",
+      error: []
     });
   }
 
@@ -171,7 +173,7 @@ let setActive = (week, row, col) => {
 };
 
 let getActive = () => {
-  return store.active;
+  return JSON.parse(JSON.stringify(store.active));
 };
 
 let storeActive = (setInfo, staffInfo, roomInfo) => {
@@ -184,6 +186,45 @@ let storeActive = (setInfo, staffInfo, roomInfo) => {
   store.data.weeks[store.active.week].rows[store.active.row].data[
     store.active.col
   ].roomInfo = roomInfo;
+
+  store.data.weeks[store.active.week].rows[store.active.row].data[
+    store.active.col
+  ].subject = setInfo.split("/")[0];
+
+  // clear errors
+  for (let row of store.data.weeks[store.active.week].rows) {
+    row.data[store.active.col].error = [];
+  }
+  // set 'error' property on any staff/room clashes in the periods
+  let staffArr = store.data.weeks[store.active.week].rows.map(
+    el => el.data[store.active.col].staffInfo
+  );
+  let roomArr = store.data.weeks[store.active.week].rows.map(
+    el => el.data[store.active.col].roomInfo
+  );
+  console.log(staffArr, roomArr);
+
+  var found = [];
+
+  for (let [index, item] of staffArr.entries()) {
+    console.log(index, item);
+    if (staffArr.filter(el => el === item).length > 1) {
+      found.push(index);
+      store.data.weeks[store.active.week].rows[index].data[
+        store.active.col
+      ].error.push("staff");
+    }
+  }
+
+  for (let [index, item] of roomArr.entries()) {
+    console.log(index, item);
+    if (staffArr.filter(el => el === item).length > 1) {
+      found.push(index);
+      store.data.weeks[store.active.week].rows[index].data[
+        store.active.col
+      ].error.push("room");
+    }
+  }
 
   store.active = {
     isActive: false,

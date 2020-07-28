@@ -42,7 +42,7 @@
     </v-card-text>
     <v-card-actions>
       <v-spacer></v-spacer>
-      <v-btn color="info" text @click="store()">store</v-btn>
+      <v-btn color="info" text  @click="store">store</v-btn>
     </v-card-actions>
   </v-card>
 </template>
@@ -85,7 +85,6 @@ export default {
       if (!this.checksetInfo()) isValid = false;
       if (!this.checkStaffInfo()) isValid = false;
       if (!this.checkRoomInfo()) isValid = false;
-
       if (isValid) this.updateLesson();
       else this.snackbar = true;
     },

@@ -28,14 +28,14 @@
           <template v-if="!isBlock">
             <th
               v-for="(header,headerIndex) in data.weeks[week].headers"
-              :style="getColor(headerIndex)"
+              :style="getColor(null,headerIndex)"
               v-bind:key="header.id"
             >{{header.block}}</th>
           </template>
           <template v-if="isBlock">
             <th
               v-for="header in data.weeks[week].blocks"
-              :style="getColor(header.headersIndex)"
+              :style="getColor(null,header.headersIndex)"
               v-bind:key="header.id"
             >{{header.block}}</th>
           </template>
@@ -46,7 +46,7 @@
           <template v-if="!isBlock">
             <th
               v-for="(header,headerIndex) in data.weeks[week].headers"
-              :style="getColor(headerIndex)"
+              :style="getColor(null,headerIndex)"
               v-bind:key="header.id"
             >
               <b>{{header.name}}</b>
@@ -56,7 +56,7 @@
           <template v-if="isBlock">
             <th
               v-for="header in data.weeks[week].blocks"
-              :style="getColor(header.headersIndex)"
+              :style="getColor(null,header.headersIndex)"
               v-bind:key="header.id"
             >
               <b>{{header.name}}</b>
@@ -78,7 +78,7 @@
             <template v-if="!isBlock">
               <td
                 v-for="(header,headerIndex) in data.weeks[week].headers"
-                :style="getColor(headerIndex)"
+                :style="getColor(rowIndex,headerIndex)"
                 v-bind:key="header.id"
                 @click="edit(rowIndex,headerIndex)"
               >
@@ -93,7 +93,7 @@
             <template v-if="isBlock">
               <td
                 v-for="header in data.weeks[week].blocks"
-                :style="getColor(header.headersIndex)"
+                :style="getColor(rowIndex,header.headersIndex)"
                 v-bind:key="header.id"
               >
                 {{row.data[header.headersIndex].setInfo}}
@@ -188,14 +188,21 @@ export default {
       this.dialog = false;
     },
 
-    getColor(headerIndex) {
-      let block = this.data.weeks[this.week].headers[headerIndex].block;
+    getColor(row, col) {
+      let block = this.data.weeks[this.week].headers[col].block;
       let style = "";
       if (block !== "") {
         let colorArr = this.settings.blocks.filter(el => el.name === block);
         //console.log(colorArr);
         style = "background-color:" + colorArr[0].color;
       }
+
+      if (row !== null) {
+        if (this.data.weeks[this.week].rows[row].data[col].error.length > 0) {
+          style = "background-color:red;color:white;";
+        }
+      }
+
       return style;
     }
   },
