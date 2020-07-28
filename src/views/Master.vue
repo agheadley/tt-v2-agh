@@ -1,7 +1,9 @@
 <template>
   <v-container fluid>
     <v-row align="baseline">
-      <v-col cols="2">{{settings.name}}</v-col>
+      <v-col cols="2">
+        <b>{{settings.name}}</b>
+      </v-col>
       <!-- week year block select-->
       <v-col cols="3">
         <WeekSelect v-bind:weeks="settings.weeks" v-on:updateWeek="week=$event"></WeekSelect>

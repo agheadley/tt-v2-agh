@@ -1,117 +1,112 @@
 <template>
-  <v-row justify="center">
-    <v-row justify="center">
-      <v-btn text color="info" @click="resetSettings">RESET SETTINGS</v-btn>
-      <v-btn text color="info" @click="resetData">RESET DATA</v-btn>
-    </v-row>
-
-    <v-card flat outlined width="80%">
-      <!--<v-card-title>Monitor v1</v-card-title>-->
+  <v-container fluid>
+    <v-card>
+      <v-card-title>Clear Data</v-card-title>
+      <v-card-actions>
+        <v-btn text color="info" @click="openDialog('CLEAR SETTINGS')">Clear Settings</v-btn>
+        <v-btn text color="info" @click="openDialog('CLEAR DATA')">Clear Data</v-btn>
+      </v-card-actions>
+    </v-card>
+    <br>
+    <v-card>
+      <v-card-title>Timetable Name</v-card-title>
+      <v-row align="baseline">
+        <v-col>
+          <v-card-text>
+            <v-text-field v-model="settings.name" label="Name" readonly outlined></v-text-field>
+          </v-card-text>
+        </v-col>
+        <v-col>
+          <v-card-actions>
+            <v-btn text color="info" @click="openDialog('TIMETABLE NAME')">Change Name</v-btn>
+          </v-card-actions>
+        </v-col>
+      </v-row>
+    </v-card>
+    <br>
+    <v-card>
+      <v-card-title>Lessons</v-card-title>
       <v-card-text>
-        <v-alert type="info">Choose a text file</v-alert>
-        <v-file-input @click="isData=false" v-model="chosenFile" label="Choose file" outlined dense></v-file-input>
-        <v-row>
-          <v-col>
-            <v-alert type="info">Column count</v-alert>
-          </v-col>
-          <v-col>
-            <v-slider
-              v-model="sliderCols"
-              class="align-center"
-              :max="maxCols"
-              :min="minCols"
-              hide-details
-            >
-              <template v-slot:append>
-                <v-text-field
-                  v-model="sliderCols"
-                  class="mt-0 pt-0"
-                  hide-details
-                  single-line
-                  type="number"
-                  style="width: 2em"
-                ></v-text-field>
-              </template>
-            </v-slider>
-          </v-col>
-        </v-row>
-        <v-divider/>
-        <br>
-        <template v-if="isData">
-          <v-row>
-            <v-btn color="info" @click="isCode = !isCode">{{ isCode ? 'Show Chars' : 'Show Codes' }}</v-btn>
-            <v-spacer/>
-            <template v-if="isCode">
-              <v-btn color="info" @click="isHex = !isHex">{{ isHex ? 'Hex' : 'Decimal' }}</v-btn>
-            </template>
-          </v-row>
-          <v-row justify="center">
-            <v-simple-table v-if="isData">
-              <thead>
-                <tr>
-                  <th v-for="header in data.headers" v-bind:key="header">{{header}}</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr v-for="(row,rowIndex) in data.content" v-bind:key="rowIndex">
-                  <template v-if="isCode">
-                    <td v-for="col in data.headers" v-bind:key="col.code">
-                      <template v-if="isHex">{{row[col].code}}</template>
-                      <template v-if="!isHex">{{row[col].hex}}</template>
-                    </td>
-                  </template>
-                  <template v-if="!isCode">
-                    <td v-for="col in data.headers" v-bind:key="col.code">{{row[col].char}}</td>
-                  </template>
-                </tr>
-              </tbody>
-            </v-simple-table>
-          </v-row>
+        <template v-for="week in data.weeks">
+          <b>WEEK {{week.name}}</b>
+          <br>
+          <v-simple-table>
+            <thead>
+              <tr>
+                <th>id</th>
+                <th>day</th>
+                <th>period</th>
+                <th>block</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="lesson in week.headers">
+                <td>{{lesson.id}}</td>
+                <td>{{lesson.day}}</td>
+                <td>{{lesson.period}}</td>
+                <td>{{lesson.block}}</td>
+              </tr>
+            </tbody>
+          </v-simple-table>
         </template>
       </v-card-text>
+
+      <v-card-actions>
+        <v-btn text color="info" @click="openDialog('LESSONS')">UPDATE</v-btn>
+      </v-card-actions>
     </v-card>
-  </v-row>
+    <v-dialog v-model="dialog" max-width="25em">
+      <Reset
+        v-if="action==='CLEAR SETTINGS' || action==='CLEAR DATA'"
+        v-bind:action="action"
+        v-on:close="dialog=false;"
+      ></Reset>
+      <Name v-if="action==='TIMETABLE NAME'" v-on:close="updateName"></Name>
+      <Lessons v-if="action==='LESSONS'" v-on:close="updateLessons"></Lessons>
+    </v-dialog>
+  </v-container>
 </template>
 
 <script>
-import * as file from "../scripts/file";
 import * as store from "../scripts/store";
+import Reset from "../components/Reset";
+import Name from "../components/Name";
+import Lessons from "../components/Lessons";
 
 export default {
   name: "Settings",
+  components: {
+    Reset,
+    Name,
+    Lessons
+  },
   data() {
     return {
-      chosenFile: null,
-      data: null,
-      raw: null,
-      isData: false,
-      isCode: false,
-      isHex: false,
-      maxCols: 60,
-      minCols: 1,
-      sliderCols: 10
+      dialog: "",
+      action: null,
+      settings: null,
+      data: null
     };
   },
-  methods: {
-    resetSettings() {
-      store.resetSettings();
-    },
-    resetData() {
-      store.resetData();
-    }
+  created() {
+    this.settings = store.getSettings();
+    this.data = store.getData();
   },
-  watch: {
-    chosenFile: function(val, oldVal) {
-      console.log(val, oldVal);
-      file.read(val, data => {
-        this.raw = data;
-        this.data = file.tabulate(data, this.sliderCols);
-        this.isData = true;
-      });
+
+  methods: {
+    openDialog(type) {
+      this.action = type;
+      this.dialog = true;
     },
-    sliderCols: function(val, oldVal) {
-      console.log(val, oldVal);
-      if (this.isData) this.data = file.tabulate(this.raw, this.sliderCols);
+    updateName(e) {
+      console.log(e);
+      console.log(this.settings.name);
+      this.settings.name = e;
+      this.dialog = false;
+    },
+    updateLessons() {
+      this.settings=store.getSettings();
+      this.dialog=false;
     }
   }
 };

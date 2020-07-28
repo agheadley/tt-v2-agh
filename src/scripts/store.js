@@ -124,6 +124,11 @@ let getSettings = () => {
   return JSON.parse(JSON.stringify(store.settings));
 };
 
+let setSettings = settings => {
+  store.settings = settings;
+  window.localStorage.setItem("settings", JSON.stringify(store.settings));
+};
+
 let getData = () => {
   return JSON.parse(JSON.stringify(store.data));
 };
@@ -243,6 +248,7 @@ let storeActive = (setInfo, staffInfo, roomInfo) => {
 export {
   init,
   getSettings,
+  setSettings,
   getData,
   setData,
   addRow,
