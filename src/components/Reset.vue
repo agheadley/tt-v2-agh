@@ -43,13 +43,10 @@ export default {
       if (this.action === "CLEAR SETTINGS" && this.check === "CLEAR SETTINGS") {
         store.resetSettings();
         this.$emit("close");
-      }
-      else if (this.action === "CLEAR DATA" && this.check === "CLEAR DATA") {
+      } else if (this.action === "CLEAR DATA" && this.check === "CLEAR DATA") {
         store.resetData();
         this.$emit("close");
-      } else this.snackbar=true;
-
-      
+      } else this.snackbar = true;
     }
   }
 };

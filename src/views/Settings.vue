@@ -27,28 +27,26 @@
     <v-card>
       <v-card-title>Lessons</v-card-title>
       <v-card-text>
-        <template v-for="week in data.weeks">
-          <b v-bind:key="week.id">WEEK {{week.name}}</b>
-          <br v-bind:key="week.id">
-          <v-simple-table v-bind:key="week.id">
-            <thead>
-              <tr>
-                <th>id</th>
-                <th>day</th>
-                <th>period</th>
-                <th>block</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="lesson in week.headers" v-bind:key="lesson.id">
-                <td>{{lesson.id}}</td>
-                <td>{{lesson.day}}</td>
-                <td>{{lesson.period}}</td>
-                <td>{{lesson.block}}</td>
-              </tr>
-            </tbody>
-          </v-simple-table>
-        </template>
+        <v-simple-table v-for="week in data.weeks" v-bind:key="week.id">
+          <thead>
+            <tr>
+              <th>WEEK {{week.name}}</th>
+              <th>id</th>
+              <th>day</th>
+              <th>period</th>
+              <th>block</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="lesson in week.headers" v-bind:key="lesson.id">
+              <td>&nbsp;</td>
+              <td>{{lesson.id}}</td>
+              <td>{{lesson.day}}</td>
+              <td>{{lesson.period}}</td>
+              <td>{{lesson.block}}</td>
+            </tr>
+          </tbody>
+        </v-simple-table>
       </v-card-text>
 
       <v-card-actions>
@@ -72,6 +70,7 @@ import * as store from "../scripts/store";
 import Reset from "../components/Reset";
 import Name from "../components/Name";
 import Lessons from "../components/Lessons";
+import { watchFile } from "fs";
 
 export default {
   name: "Settings",
@@ -106,9 +105,12 @@ export default {
     },
     updateLessons() {
       this.settings = store.getSettings();
+      store.resetData();
+      this.data = store.getData();
       this.dialog = false;
     }
-  }
+  },
+  watch: {}
 };
 </script>
 

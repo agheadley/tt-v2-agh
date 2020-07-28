@@ -75,6 +75,9 @@ export default {
         this.settings.lessons = lessons;
 
         store.setSettings(this.settings);
+
+        this.settings=store.getSettings();
+
         this.$emit("close");
       } else {
         this.snackbar = true;
