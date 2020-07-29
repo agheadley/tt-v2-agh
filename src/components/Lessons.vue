@@ -34,26 +34,7 @@ export default {
     this.settings = store.getSettings();
   },
   methods: {
-    checkLessons(raw) {
-      let data = file.CSVToArray(raw, ",");
-      let valid = true;
-      let lessons = [];
-      console.log(data);
-      for (let [rowIndex, row] of data.entries()) {
-        let obj = {};
-        for (let [i, col] of data[0].entries()) {
-          if (col !== "block" && !row[i]) valid = false;
-          else obj[col] = row[i];
-        }
-        if (rowIndex > 0) lessons.push(obj);
-      }
-
-      let keys = Object.keys(lessons[0]);
-      let check = ["id", "day", "period", "week", "block"];
-      for (let item of check) {
-        if (keys.indexOf(item) === -1) valid = false;
-      }
-
+    processLessons(lessons) {
       let weekInfo = [...new Set(lessons.map(el => el.week))].sort();
       let weeks = weekInfo.map((el, i) => ({ id: i, name: el }));
       console.log(weeks);
@@ -64,25 +45,16 @@ export default {
 
       let blocks = blockInfo.map(el => ({ name: el, color: "#eeeeee" }));
 
-      //console.log(blocks);
-      //console.log(valid);
-      //console.log(lessons);
-      if (valid) {
-        this.settings.blocks = blocks;
-        this.settings.weeks = weeks;
-        this.settings.lessons = lessons;
+      this.settings.blocks = blocks;
+      this.settings.weeks = weeks;
+      this.settings.lessons = lessons;
 
-        store.setSettings(this.settings);
-        store.resetData();
+      store.setSettings(this.settings);
+      store.resetData();
 
-        this.settings = store.getSettings();
+      this.settings = store.getSettings();
 
-        this.$emit("close");
-      } else {
-        this.snackbar = true;
-      }
-
-      //this.settings=store.getSettings()
+      this.$emit("close");
     }
   },
   watch: {
@@ -91,7 +63,16 @@ export default {
         console.log(file);
         file.read(val, data => {
           console.log(data);
-          this.checkLessons(data);
+          let lessons = file.csvProcess(data, [
+            "week",
+            "id",
+            "day",
+            "period",
+            ["block", false]
+          ]);
+          console.log(lessons);
+          if (lessons.valid) this.processLessons(lessons.data);
+          else this.snackbar = true;
         });
       }
     }
