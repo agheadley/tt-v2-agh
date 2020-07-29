@@ -54,23 +54,9 @@ export default {
   name: "EditLesson",
   data() {
     return {
-      /*
-      classRules: [
-        v => !!v || "(valid subject)/(set) required",
-        v => /.+\/.+/.test(v) || "(valid subject)/(set) required",
-        v => v.length <= 10 || "Max 10 characters"
-      ],
-      staffRules: [
-        v => !!v || "staff required",
-        v => v.length <= 4 || "Max 4 characters"
-      ],
-      roomRules: [
-        v => !!v || "room required",
-        v => v.length <= 10 || "Max 10 characters"
-      ],
-      */
       snackbar: false,
-      snackbarMessage: ""
+      snackbarMessage: "",
+      settings:null,
     };
   },
   props: {
@@ -79,6 +65,7 @@ export default {
   created() {},
   methods: {
     store() {
+      this.settings=store.getSettings();
       let isValid = true;
       this.snackbarMessage = "";
 
@@ -103,9 +90,11 @@ export default {
         .toUpperCase()
         .replace(/ /g, "");
 
-      let list = store.getSettings().staff.map(el => el.initials);
-      console.log(list, this.active.staffInfo);
-      if (list.indexOf(this.active.staffInfo) === -1) isValid = false;
+      if (this.settings.checks.staff) {
+        let list = store.getSettings().staff.map(el => el.initials);
+        console.log(list, this.active.staffInfo);
+        if (list.indexOf(this.active.staffInfo) === -1) isValid = false;
+      }
 
       if (this.active.staffInfo === "") isValid = true; // accepts blanks here
       if (!isValid) this.snackbarMessage += "Invalid staff entry. ";
@@ -116,16 +105,17 @@ export default {
       let isValid = true;
       this.active.roomInfo = (" " + this.active.roomInfo).replace(/ /g, "");
 
-      let list = store.getSettings().rooms.map(el => el.room);
-      console.log(list, this.active.roomInfo);
-      if (list.indexOf(this.active.roomInfo) === -1) isValid = false;
-
+      if (this.settings.checks.rooms) {
+        let list = store.getSettings().rooms.map(el => el.room);
+        console.log(list, this.active.roomInfo);
+        if (list.indexOf(this.active.roomInfo) === -1) isValid = false;
+      }
       if (this.active.roomInfo === "") isValid = true; // accepts blanks here
       if (!isValid) this.snackbarMessage += "Invalid room entry. ";
       return isValid;
     },
     checksetInfo() {
-      if(this.active.setInfo===null) this.active.setInfo="";
+      if (this.active.setInfo === null) this.active.setInfo = "";
       let isValid = true;
 
       this.active.setInfo = (" " + this.active.setInfo).replace(/ /g, "");
@@ -134,9 +124,11 @@ export default {
         if (this.active.setInfo.length > 2) {
           if (this.active.setInfo.indexOf("/") > 0) {
             let subjectSet = this.active.setInfo.split("/");
-            let list = store.getSettings().subjects.map(el => el.subject);
-            //console.log(list, subjectSet[0]);
-            if (list.indexOf(subjectSet[0]) === -1) isValid = false;
+            if (this.settings.checks.subject) {
+              let list = store.getSettings().subjects.map(el => el.subject);
+              //console.log(list, subjectSet[0]);
+              if (list.indexOf(subjectSet[0]) === -1) isValid = false;
+            }
             if (subjectSet[1].length < 1) isValid = false;
           } else isValid = false;
         } else isValid = false;

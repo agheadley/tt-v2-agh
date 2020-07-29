@@ -74,7 +74,66 @@
         </v-card-text>
         <v-card-actions></v-card-actions>
       </v-card>
+      <br>
+      <v-card>
+        <v-card-title>Years</v-card-title>
+        <v-card-text>
+          <v-simple-table>
+            <thead>
+              <tr>
+                <th>Year Code</th>
+                <th>&nbsp;</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="(year,index) in settings.years" v-bind:key="year.id">
+                <td>
+                  <v-text-field
+                    v-model="settings.years[index].name"
+                    label="Year Code"
+                    outlined
+                    dense
+                    @blur="checkYear(index)"
+                  ></v-text-field>
+                </td>
+                <td>
+                  <v-btn @click="deleteYear(index)" text small>
+                    <v-icon dark>mdi-delete</v-icon>
+                  </v-btn>
+                </td>
+              </tr>
+            </tbody>
+          </v-simple-table>
+          <v-btn @click="addYear" class="mx-2" fab dark small color="info">
+            <v-icon dark>mdi-plus</v-icon>
+          </v-btn>
+        </v-card-text>
+      </v-card>
+      <br>
+      <v-card>
+        <v-card-title>Subject List</v-card-title>
+        <v-card-text>TBC</v-card-text>
+        <v-card-actions></v-card-actions>
+      </v-card>
+      <br>
+      <v-card>
+        <v-card-title>Staff List</v-card-title>
+        <v-card-text>TBC</v-card-text>
+        <v-card-actions></v-card-actions>
+      </v-card>
+      <br>
+      <v-card>
+        <v-card-title>Room List</v-card-title>
+        <v-card-text>TBC</v-card-text>
+        <v-card-actions></v-card-actions>
+      </v-card>
     </template>
+    <v-snackbar v-model="snackbar" timeout="3000">
+      {{snackbarMessage}}
+      <template v-slot:action="{ attrs }">
+        <v-btn color="red" text v-bind="attrs" @click="snackbar = false">Close</v-btn>
+      </template>
+    </v-snackbar>
     <v-dialog v-model="dialog" max-width="25em">
       <Reset
         v-if="action==='CLEAR SETTINGS' || action==='CLEAR DATA'"
@@ -106,7 +165,9 @@ export default {
       action: null,
       settings: null,
       data: null,
-      color: null
+      color: null,
+      snackbar: false,
+      snackbarMessage: ""
     };
   },
   created() {
@@ -142,6 +203,23 @@ export default {
     },
     getColor(block) {
       return "background-color:" + block.color;
+    },
+    addYear() {
+      this.settings.years.push({ id: this.settings.years.length, name: "*" });
+      store.setSettings(this.settings);
+    },
+    deleteYear(index) {
+      this.settings.years.splice(index, 1);
+      store.setSettings(this.settings);
+      this.snackbarMessage =
+        "Warning - deleting years could cause timetable issues.";
+      this.snackbar = true;
+    },
+    checkYear(index) {
+      if (!this.settings.years[index].name) {
+        this.snackbarMessage = "Warning - no text in year code";
+        this.snackbar = true;
+      }
     }
   }
 };

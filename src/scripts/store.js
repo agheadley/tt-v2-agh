@@ -42,6 +42,7 @@ store.init = {
     { day: "W", period: "2", id: 9, week: "B", block: "B" },
     { day: "Th", period: "3", id: 10, week: "B", block: "C" }
   ],
+  checks: { subject: false, staff: false, rooms: false },
   subjects: [
     { department: "ENG", subject: "E" },
     { department: "ENG", subject: "Eli" },
