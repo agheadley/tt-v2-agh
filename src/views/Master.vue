@@ -41,6 +41,7 @@
               v-bind:key="header.id"
             >{{header.block}}</th>
           </template>
+          <th>&nbsp;</th>
         </tr>
         <tr>
           <th>&nbsp;</th>
@@ -51,7 +52,7 @@
               :style="getColor(null,headerIndex)"
               v-bind:key="header.id"
             >
-              <b>{{header.name}}</b>
+              <b>{{header.day}}{{header.period}}</b>
             </th>
           </template>
 
@@ -214,8 +215,11 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-td {
-  max-width: 5em;
+td,
+th {
+  border: 0.5px solid gray;
   overflow: hidden;
+  text-align: center;
+  vertical-align: middle;
 }
 </style>

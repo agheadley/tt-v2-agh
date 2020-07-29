@@ -56,7 +56,7 @@ export default {
     return {
       snackbar: false,
       snackbarMessage: "",
-      settings:null,
+      settings: null
     };
   },
   props: {
@@ -65,7 +65,7 @@ export default {
   created() {},
   methods: {
     store() {
-      this.settings=store.getSettings();
+      this.settings = store.getSettings();
       let isValid = true;
       this.snackbarMessage = "";
 
@@ -116,6 +116,7 @@ export default {
     },
     checksetInfo() {
       if (this.active.setInfo === null) this.active.setInfo = "";
+
       let isValid = true;
 
       this.active.setInfo = (" " + this.active.setInfo).replace(/ /g, "");
@@ -133,6 +134,8 @@ export default {
           } else isValid = false;
         } else isValid = false;
       } else isValid = false;
+
+      if (!this.active.setInfo) isValid = true;
 
       if (!isValid) this.snackbarMessage += "Invalid set entry. ";
 

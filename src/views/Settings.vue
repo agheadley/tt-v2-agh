@@ -18,6 +18,17 @@
       </v-card-actions>
     </v-card>
     <br>
+
+    <v-card>
+      <v-card-title>Data Validation</v-card-title>
+      <v-card-text>
+        <v-checkbox v-model="settings.checks.subject" label="Subject"></v-checkbox>
+        <v-checkbox v-model="settings.checks.staff" label="Staff"></v-checkbox>
+        <v-checkbox v-model="settings.checks.room" label="Rooms"></v-checkbox>
+      </v-card-text>
+    </v-card>
+    <br>
+
     <v-card>
       <v-card-title>Lessons</v-card-title>
       <v-card-text>
